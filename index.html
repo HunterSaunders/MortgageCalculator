@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter Saunders' Assignments</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1> Mortgage Calculator</h1>
+  <form>
+    <label class="inputRequired">APR (%)</label>
+    <input 
+      name="apr"
+      type="number" 
+      placeholder="0.00-25.00"
+      id="apr" 
+      autocomplete="off" 
+      onchange="changeApr(this.value), calculatePayment()" 
+      required 
+    />
+    <input readonly id="validated-apr" />
+    <label class="inputRequired">Loan Term (Years)</label>
+    <input 
+      name="term" 
+      type="number"
+      placeholder="1-40" 
+      id="term"
+      autocomplete="off" 
+      onchange="changeTerm(this.value), calculatePayment()" 
+      required
+    />
+    <input readonly id="validated-term" />
+    <label class="inputRequired">Loan Amount</label>
+    <input 
+      name="amount"
+      type="number" 
+      placeholder="$" 
+      id="amount" 
+      autocomplete="off" 
+      onchange="changeAmount(this.value), calculatePayment()" 
+      required
+    />
+    <input readonly id="validated-amount" />
+    <label>Monthly Payment</label>
+    <input readonly id="payment" />
+    <button type="reset" id="clear" onclick="clear()">Clear</button>
+    <button 
+      type="button" 
+      id="calculate" 
+      onclick="calculatePayment()">Calculate</button>
+  </form>
+  <script type="text/javascript">
+    let aprInput = 0;
+    let termInput = 0;
+    let amountInput = 0;
+    let aprValid = false;
+    let termValid = false;
+    let amountValid = false;
+
+    const changeApr = (value)=>{ 
+      if( value >=0 && value <= 25 && value!= ""){
+        aprInput = value;
+        document.getElementById('validated-apr').value = "✔ APR Input is valid";
+        document.getElementById('validated-apr').style.color = "#42f563";
+        aprValid = true;
+      } else{
+        let error = aprError(value);
+        document.getElementById('validated-apr').value = "Error: " + error;
+        document.getElementById('validated-apr').style.color = "#f54242";
+        aprValid = false;
+      }
+    }
+    const changeTerm = (value)=>{
+      if( value >=1 && value <= 40 && value!= ""){
+        termInput = value;
+        document.getElementById('validated-term').value = "✔ Term Input is valid";
+        document.getElementById('validated-term').style.color = "#42f563";
+        termValid = true;
+      } else{
+        let error = termError();
+        document.getElementById('validated-term').value = "Error: " + error;
+        document.getElementById('validated-term').style.color = "#f54242";
+        termValid = false;
+      }
+    }
+    const changeAmount = (value)=>{ 
+      if(value >= 0 && value!= ""){
+        amountInput = value
+        document.getElementById('validated-amount').value = "✔ Amount Input is valid";
+        document.getElementById('validated-amount').style.color = "#42f563";
+        amountValid = true;
+      }else{
+        let error = termError();
+        document.getElementById('validated-amount').value = "Error: " + error;
+        document.getElementById('validated-amount').style.color = "#f54242";
+        amountValid = false;
+      }
+    }
+
+    const calculatePayment = () =>{
+      let monthlyRate = aprInput/1200;
+      let months = termInput*12;
+      let payment =  (amountInput * (monthlyRate*(Math.pow( (1 + monthlyRate) , months )) / ( Math.pow( (1 + monthlyRate) , (months) ) -1))).toFixed(2);
+
+      if (!aprValid || !termValid || !amountValid){
+        focusError();
+      } else{
+        if (payment > 0){
+        document.getElementById('payment').value = "$" + payment.toString();
+        }
+        else{
+          document.getElementById('payment').value = "$0";
+        }
+      }
+    }
+    const clear = () =>{
+      aprInput = 0;
+      termInput = 0;
+      amountInput = 0;
+    }
+
+    const aprError = (value) =>{
+      console.log(value)
+      if (value == ""){
+        return "Input cannot be left empty"
+      }else if (value > 25){
+        return "Number is too high (must be from 0-25)"
+      } else{
+        return "Number is too Low (must be from 0-25)"
+      }
+    }
+    const termError = (value) =>{
+      if (value == ""){
+        return "Input cannot be left empty"
+      }else if (value > 40){
+        return "Number is too high (must be from 1-40)"
+      } else{
+        return "Number is too Low (must be from 1-40)"
+      }
+    }
+    const amountError = (value) =>{
+      if (value == ""){
+        return "Input cannot be left empty"
+      }else{
+        return "Number Invalid, Must be greater than 0"
+      }
+    }
+    const focusError = () =>{
+      if (!aprValid){
+        document.getElementById("apr").focus()
+      }
+      if (!termValid){
+        document.getElementById("term").focus()
+      }
+      if (!amountValid){
+        document.getElementById("amount").focus()
+      }
+    }
+    
+
+  </script>
+</body>
+
+</html>
